@@ -3936,7 +3936,7 @@ function generateHTML() {
 				return record.status === 'error';
 			}
 			if (filterKey === 'socks5' || filterKey === 'http' || filterKey === 'https') {
-				return record.proxyType === filterKey;
+				return record.status === 'success' && record.proxyType === filterKey;
 			}
 			return true;
 		}
