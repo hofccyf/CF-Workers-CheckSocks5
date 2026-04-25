@@ -170,7 +170,7 @@ async function checkProxy({ type, value }, requestUrl) {
 	}
 
 	let tunnel = null;
-	const targetHost = requestUrl.hostname;
+	const targetHost = 'api.ipapi.is'; //requestUrl.hostname;
 	const targetSecure = requestUrl.protocol !== 'http:';
 	const targetPort = targetSecure ? 443 : 80;
 
@@ -259,9 +259,9 @@ async function requestIpJsonOverPlainTunnel(tunnel, targetHost) {
 
 function buildIpJsonRequest(targetHost) {
 	return [
-		'GET /ip.json HTTP/1.1',
+		'GET / HTTP/1.1',
 		`Host: ${targetHost}`,
-		'User-Agent: CF-Workers-CheckProxy/2.0',
+		'User-Agent: Mozilla/5.0 CF-Workers-CheckProxy/2.0',
 		'Accept: application/json',
 		'Connection: close',
 		'',
@@ -4561,6 +4561,59 @@ function generateHTML() {
 			return itemObj;
 		}
 
+		function firstNonEmpty() {
+			for (let i = 0; i < arguments.length; i++) {
+				const value = arguments[i];
+				if (value === undefined || value === null) continue;
+				const text = String(value).trim();
+				if (text) return value;
+			}
+			return '';
+		}
+
+		function normalizeExitData(exit) {
+			if (!exit || typeof exit !== 'object') return null;
+
+			const location = exit.location && typeof exit.location === 'object' ? exit.location : {};
+			const asnInfo = exit.asn && typeof exit.asn === 'object' ? exit.asn : {};
+			const company = exit.company && typeof exit.company === 'object' ? exit.company : {};
+			const latitude = firstNonEmpty(exit.latitude, location.latitude);
+			const longitude = firstNonEmpty(exit.longitude, location.longitude);
+			const loc = firstNonEmpty(
+				exit.loc,
+				latitude !== '' && longitude !== '' ? String(latitude) + ',' + String(longitude) : ''
+			);
+			const asn = firstNonEmpty(typeof exit.asn === 'object' ? '' : exit.asn, asnInfo.asn);
+			const asOrganization = firstNonEmpty(exit.asOrganization, exit.org, asnInfo.org, asnInfo.descr, company.name);
+			let countryCode = firstNonEmpty(exit.countryCode, exit.country_code, location.country_code, asnInfo.country);
+			if (/^[a-z]{2}$/i.test(String(countryCode || '').trim())) {
+				countryCode = String(countryCode).trim().toUpperCase();
+			}
+			const countryName = firstNonEmpty(exit.countryName, location.country);
+			const ip = firstNonEmpty(exit.ip);
+
+			return Object.assign({}, exit, {
+				ip: ip,
+				ipType: firstNonEmpty(exit.ipType, ip && String(ip).includes(':') ? 'ipv6' : (ip ? 'ipv4' : '')),
+				asn: asn,
+				asOrganization: asOrganization,
+				org: firstNonEmpty(exit.org, asn ? 'AS' + asn + (asOrganization ? ' ' + asOrganization : '') : asOrganization),
+				continent: firstNonEmpty(exit.continent, location.continent),
+				country: firstNonEmpty(exit.country, countryCode, countryName),
+				countryCode: countryCode,
+				country_code: countryCode,
+				countryName: countryName,
+				region: firstNonEmpty(exit.region, exit.regionName, location.state),
+				regionCode: firstNonEmpty(exit.regionCode, location.state_code),
+				city: firstNonEmpty(exit.city, location.city),
+				postalCode: firstNonEmpty(exit.postalCode, location.zip),
+				timezone: firstNonEmpty(exit.timezone, location.timezone),
+				loc: loc,
+				latitude: latitude,
+				longitude: longitude
+			});
+		}
+
 		function normalizeCheckDataForUi(data, target) {
 			const source = data || {};
 			let parsed = null;
@@ -4570,7 +4623,7 @@ function generateHTML() {
 				parsed = null;
 			}
 
-			const exit = source.exit || null;
+			const exit = normalizeExitData(source.exit);
 			const stack = exit && String(exit.ipType || '').toLowerCase() === 'ipv6' ? 'ipv6' : 'ipv4';
 			const probeResults = {
 				ipv4: { ok: false },
@@ -4586,6 +4639,7 @@ function generateHTML() {
 
 			return Object.assign({}, source, {
 				type: normalizeProxyType(source.type) || (parsed ? parsed.scheme : ''),
+				exit: exit,
 				proxyIP: parsed ? parsed.hostPlain : (source.hostname || source.candidate || target),
 				portRemote: parsed ? parsed.port : (source.port || ''),
 				supports_ipv4: Boolean(probeResults.ipv4.ok),
