@@ -3051,7 +3051,7 @@ function generateHTML() {
 		let inputCount = 0;
 		let appState = 'idle';
 		let activeRun = null;
-		const CHECK_CONCURRENCY = 6;
+		const CHECK_CONCURRENCY = 32;
 		const RESOLVE_BATCH_SIZE = 50;
 		const RESOLVE_BATCH_TIMEOUT_MS = 20000;
 		const RESOLVE_BATCH_MAX_ATTEMPTS = 3;
