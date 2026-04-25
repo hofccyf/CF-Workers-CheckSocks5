@@ -1,6 +1,5 @@
 ﻿import { connect } from 'cloudflare:sockets';
 
-const VERSION = '2026-04-25';
 const CHECK_TIMEOUT_MS = 12000;
 const CONNECT_TIMEOUT_MS = 6000;
 const READ_TIMEOUT_MS = 8000;
@@ -908,7 +907,7 @@ function generateHTML() {
 	<meta charset="UTF-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
 	<meta name="color-scheme" content="light dark">
-	<title>Check Proxy</title>
+	<title>Check Socks5</title>
 	<link rel="preconnect" href="https://fonts.googleapis.com">
 	<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 	<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Space+Grotesk:wght@500;700&display=swap" rel="stylesheet">
@@ -2774,7 +2773,7 @@ function generateHTML() {
 
 		<header class="site-header">
 			<div class="brand">
-				<div class="brand-title">Check Proxy</div>
+				<div class="brand-title">Check Socks5</div>
 				<div class="brand-chip">
 					<span class="brand-chip-text">
 						<span class="brand-dot"></span>
@@ -2801,7 +2800,7 @@ function generateHTML() {
 					</button>
 				</div>
 			</div>
-			<div class="header-note">基于 Cloudflare Workers 的 socks5 / http / https 代理检测工具，支持单个或批量代理解析、可用性验证与出口信息查看。</div>
+			<div class="header-note">基于 Cloudflare Workers 的 SOCKS5 / HTTP / HTTPS 代理检测工具，支持单个或批量代理解析、可用性验证与出口信息查看。</div>
 		</header>
 
 		<main class="site-main">
@@ -2944,7 +2943,7 @@ function generateHTML() {
 		</main>
 
 		<footer class="site-footer">
-			<div>© 2025 - 2026 Check Proxy · 基于 Cloudflare Workers 构建与运行 · 今日访问人数：<span id="visit-count">···</span> · 站点维护：<a href="https://t.me/CMLiussss" target="_blank" rel="noreferrer">CMLiussss</a></div>
+			<div>© 2025 - 2026 Check Socks5 · 基于 Cloudflare Workers 构建与运行 · 今日访问人数：<span id="visit-count">···</span> · 站点维护：<a href="https://t.me/CMLiussss" target="_blank" rel="noreferrer">CMLiussss</a></div>
 		</footer>
 	</div>
 
@@ -3013,9 +3012,9 @@ function generateHTML() {
 			{ key: 'all', label: '全部' },
 			{ key: 'success', label: '有效' },
 			{ key: 'failed', label: '失败' },
-			{ key: 'socks5', label: 'socks5' },
-			{ key: 'http', label: 'http' },
-			{ key: 'https', label: 'https' }
+			{ key: 'socks5', label: 'SOCKS5' },
+			{ key: 'http', label: 'HTTP' },
+			{ key: 'https', label: 'HTTPS' }
 		];
 		const EXPORT_CSV_COLUMNS = [
 			{ header: 'IP', path: 'proxyIP' },
