@@ -1581,6 +1581,20 @@ function generateHTML() {
 			box-shadow: 0 24px 42px rgba(97, 219, 255, 0.34);
 		}
 
+		.primary-btn.is-stop {
+			background: linear-gradient(135deg, #ef4444, #fb7185);
+			color: #fff7f7;
+			box-shadow: 0 18px 34px rgba(239, 68, 68, 0.28);
+		}
+
+		.primary-btn.is-stop small {
+			color: rgba(255, 247, 247, 0.78);
+		}
+
+		.primary-btn.is-stop:hover {
+			box-shadow: 0 24px 42px rgba(239, 68, 68, 0.34);
+		}
+
 		.primary-btn:disabled {
 			cursor: wait;
 			transform: none;
@@ -1715,7 +1729,8 @@ function generateHTML() {
 		}
 
 		.results-pill.state-empty,
-		.results-pill.state-error {
+		.results-pill.state-error,
+		.results-pill.state-stopped {
 			background: rgba(251, 113, 133, 0.1);
 			border-color: rgba(251, 113, 133, 0.22);
 			color: #ffc4d0;
@@ -2469,6 +2484,14 @@ function generateHTML() {
 			box-shadow: 0 22px 40px rgba(14, 165, 233, 0.22);
 		}
 
+		html[data-theme='light'] .primary-btn.is-stop {
+			box-shadow: 0 18px 34px rgba(225, 29, 72, 0.18);
+		}
+
+		html[data-theme='light'] .primary-btn.is-stop:hover {
+			box-shadow: 0 22px 40px rgba(225, 29, 72, 0.24);
+		}
+
 		html[data-theme='light'] .results-pill {
 			border-color: rgba(95, 123, 150, 0.16);
 			background: rgba(255, 255, 255, 0.72);
@@ -2498,7 +2521,8 @@ function generateHTML() {
 		}
 
 		html[data-theme='light'] .results-pill.state-empty,
-		html[data-theme='light'] .results-pill.state-error {
+		html[data-theme='light'] .results-pill.state-error,
+		html[data-theme='light'] .results-pill.state-stopped {
 			background: rgba(225, 29, 72, 0.1);
 			border-color: rgba(225, 29, 72, 0.16);
 			color: #be123c;
@@ -3026,6 +3050,7 @@ function generateHTML() {
 		let successCount = 0;
 		let inputCount = 0;
 		let appState = 'idle';
+		let activeRun = null;
 		const CHECK_CONCURRENCY = 6;
 		const RESOLVE_BATCH_SIZE = 50;
 		const RESOLVE_BATCH_TIMEOUT_MS = 20000;
@@ -3547,6 +3572,37 @@ function generateHTML() {
 			});
 		}
 
+		function makeAbortError(message) {
+			const error = new Error(message || '检测已停止');
+			error.name = 'AbortError';
+			return error;
+		}
+
+		function isRunStopped(run) {
+			return !run || run.cancelled || run.controller.signal.aborted || activeRun !== run;
+		}
+
+		function throwIfRunStopped(run) {
+			if (isRunStopped(run)) throw makeAbortError();
+		}
+
+		function setCheckButtonRunning(isRunning) {
+			const label = checkBtn.querySelector('span');
+			const hint = checkBtn.querySelector('small');
+			checkBtn.disabled = false;
+			checkBtn.classList.toggle('is-stop', isRunning);
+			if (label) label.innerText = isRunning ? '停止检测' : '开始检测';
+			if (hint) hint.innerText = isRunning ? 'Stop' : 'Resolve + Check';
+		}
+
+		function stopActiveRun() {
+			if (!activeRun || isRunStopped(activeRun)) return;
+			activeRun.cancelled = true;
+			activeRun.controller.abort();
+			progressText.innerText = '正在停止检测...';
+			setAppState('stopped');
+		}
+
 		function splitIntoChunks(items, size) {
 			const chunks = [];
 			for (let i = 0; i < items.length; i += size) {
@@ -3555,11 +3611,18 @@ function generateHTML() {
 			return chunks;
 		}
 
-		async function fetchJsonWithTimeout(resource, options, timeoutMs) {
+		async function fetchJsonWithTimeout(resource, options, timeoutMs, signal) {
 			const controller = new AbortController();
 			const timer = window.setTimeout(function () {
 				controller.abort();
 			}, timeoutMs);
+			const abortFromSignal = function () {
+				controller.abort();
+			};
+			if (signal) {
+				if (signal.aborted) controller.abort();
+				else signal.addEventListener('abort', abortFromSignal, { once: true });
+			}
 
 			try {
 				const response = await fetch(resource, Object.assign({}, options || {}, {
@@ -3576,6 +3639,7 @@ function generateHTML() {
 				return { response, payload };
 			} finally {
 				window.clearTimeout(timer);
+				if (signal) signal.removeEventListener('abort', abortFromSignal);
 			}
 		}
 
@@ -3608,7 +3672,8 @@ function generateHTML() {
 			});
 		}
 
-		async function requestResolveBatch(batch) {
+		async function requestResolveBatch(batch, run) {
+			throwIfRunStopped(run);
 			const payload = {
 				targets: batch.map(function (job) { return job.line; })
 			};
@@ -3618,7 +3683,7 @@ function generateHTML() {
 					'Content-Type': 'application/json'
 				},
 				body: JSON.stringify(payload)
-			}, RESOLVE_BATCH_TIMEOUT_MS);
+			}, RESOLVE_BATCH_TIMEOUT_MS, run?.controller.signal);
 
 			if (!result.response.ok) {
 				const errorMessage = result.payload && result.payload.error
@@ -3630,14 +3695,16 @@ function generateHTML() {
 			applyResolveBatchPayload(batch, result.payload);
 		}
 
-		async function resolveBatchWithRetry(batch, batchIndex, totalBatches) {
+		async function resolveBatchWithRetry(batch, batchIndex, totalBatches, run) {
 			for (let attempt = 1; attempt <= RESOLVE_BATCH_MAX_ATTEMPTS; attempt++) {
+				throwIfRunStopped(run);
 				updateResolveBatchProgress(batchIndex, totalBatches, attempt);
 
 				try {
-					await requestResolveBatch(batch);
+					await requestResolveBatch(batch, run);
 					return true;
 				} catch (error) {
+					if (isRunStopped(run)) throw error;
 					const label = error && error.name === 'AbortError'
 						? 'Resolve batch timeout'
 						: 'Resolve batch error';
@@ -3654,12 +3721,13 @@ function generateHTML() {
 			return false;
 		}
 
-		async function resolveBatchJobs(resolveJobs) {
+		async function resolveBatchJobs(resolveJobs, run) {
 			const batches = splitIntoChunks(resolveJobs, RESOLVE_BATCH_SIZE);
 			let failedBatchCount = 0;
 
 			for (let index = 0; index < batches.length; index++) {
-				const resolved = await resolveBatchWithRetry(batches[index], index + 1, batches.length);
+				throwIfRunStopped(run);
+				const resolved = await resolveBatchWithRetry(batches[index], index + 1, batches.length, run);
 				if (!resolved) {
 					failedBatchCount++;
 				}
@@ -3670,10 +3738,11 @@ function generateHTML() {
 			}
 		}
 
-		async function resolveSingleJob(job) {
+		async function resolveSingleJob(job, run) {
 			for (let attempt = 1; attempt <= RESOLVE_BATCH_MAX_ATTEMPTS; attempt++) {
+				throwIfRunStopped(run);
 				try {
-					const result = await fetchJsonWithTimeout('/resolve?proxyip=' + encodeURIComponent(job.line), {}, RESOLVE_BATCH_TIMEOUT_MS);
+					const result = await fetchJsonWithTimeout('/resolve?proxyip=' + encodeURIComponent(job.line), {}, RESOLVE_BATCH_TIMEOUT_MS, run?.controller.signal);
 					if (!result.response.ok) {
 						console.error('Resolve error for', job.line, result.payload || result.response.status);
 						return false;
@@ -3686,6 +3755,7 @@ function generateHTML() {
 					}
 					return true;
 				} catch (error) {
+					if (isRunStopped(run)) throw error;
 					if (attempt >= RESOLVE_BATCH_MAX_ATTEMPTS) {
 						console.error('Resolve timeout for', job.line, error);
 						return false;
@@ -3697,13 +3767,13 @@ function generateHTML() {
 			return false;
 		}
 
-		async function runWithConcurrency(items, limit, worker) {
+		async function runWithConcurrency(items, limit, worker, run) {
 			let nextIndex = 0;
 			const workerCount = Math.min(Math.max(Number(limit) || 1, 1), items.length);
 			const runners = [];
 
 			async function runNext() {
-				while (nextIndex < items.length) {
+				while (nextIndex < items.length && !isRunStopped(run)) {
 					const currentIndex = nextIndex++;
 					await worker(items[currentIndex], currentIndex);
 				}
@@ -3745,7 +3815,7 @@ function generateHTML() {
 
 				if (shouldRunSingle || shouldRunBatch) {
 					event.preventDefault();
-					checkBtn.click();
+					if (!activeRun) checkBtn.click();
 				}
 			});
 		}
@@ -3811,6 +3881,11 @@ function generateHTML() {
 				description = '请求被中断或远端接口异常，可以稍后再试。';
 				meta = '运行中断，结果可能不完整。';
 				pillText = 'Error';
+			} else if (appState === 'stopped') {
+				headline = '检测已停止';
+				description = '已完成 ' + completedCount + ' / ' + totalTargets + '，有效 ' + successCount + ' 个。';
+				meta = '本轮检测已手动停止，未开始的任务不会继续请求。';
+				pillText = 'Stopped';
 			}
 
 			summaryHeadline.innerText = headline;
@@ -4655,12 +4730,13 @@ function generateHTML() {
 			return [{ stack: stack, ip: exit.ip, exitData: exit }];
 		}
 
-		async function checkIP(target, itemObj) {
+		async function checkIP(target, itemObj, run) {
+			if (isRunStopped(run)) return;
 			itemObj = itemObj || addResultItem(target);
 			const resultRecord = itemObj.record;
 
 			try {
-				const result = await fetchJsonWithTimeout('/check?proxy=' + encodeURIComponent(target), {}, 30000);
+				const result = await fetchJsonWithTimeout('/check?proxy=' + encodeURIComponent(target), {}, 30000, run?.controller.signal);
 				const data = normalizeCheckDataForUi(result.payload || {
 					success: false,
 					error: '检测接口没有返回有效 JSON'
@@ -4720,6 +4796,20 @@ function generateHTML() {
 					itemObj.exitList.innerHTML = '';
 				}
 			} catch (error) {
+				if (isRunStopped(run)) {
+					if (resultRecord) resultRecord.status = 'stopped';
+					itemObj.badge.className = 'status-badge status-error';
+					itemObj.badge.innerText = '已停止';
+					itemObj.info.innerHTML =
+						'<span class="result-label">候选目标</span>' +
+						buildCopyableTarget(target) +
+						'<span class="result-detail">检测已手动停止，未继续请求该代理。</span>';
+					itemObj.meta.innerHTML = buildMetaChip('已停止', 'info');
+					itemObj.exitList.innerHTML = '';
+					updateProgress();
+					updateResultFilters();
+					return;
+				}
 				completedCount++;
 				updateResultRecordAsError(resultRecord, null);
 				itemObj.el.className = 'result-item error';
@@ -4872,6 +4962,11 @@ function generateHTML() {
 		resultsDiv.addEventListener('click', handleCopyTargetClick);
 
 		checkBtn.addEventListener('click', async function () {
+			if (activeRun) {
+				stopActiveRun();
+				return;
+			}
+
 			const value = batchMode.checked ? normalizeBatchInputValue(inputList.value) : stripTargetLabel(inputList.value);
 			if (!value) return;
 
@@ -4896,7 +4991,12 @@ function generateHTML() {
 			totalTargets = 0;
 			inputCount = lines.length;
 
-			checkBtn.disabled = true;
+			const run = {
+				controller: new AbortController(),
+				cancelled: false
+			};
+			activeRun = run;
+			setCheckButtonRunning(true);
 			setAppState('resolving');
 
 			try {
@@ -4913,12 +5013,13 @@ function generateHTML() {
 				});
 
 				if (batchMode.checked) {
-					await resolveBatchJobs(resolveJobs);
+					await resolveBatchJobs(resolveJobs, run);
 				} else {
 					for (const job of resolveJobs) {
-						await resolveSingleJob(job);
+						await resolveSingleJob(job, run);
 					}
 				}
+				throwIfRunStopped(run);
 
 				const allResolvedTargets = [];
 				pushResolvedTargets(targetGroups, allResolvedTargets);
@@ -4927,6 +5028,7 @@ function generateHTML() {
 					totalTargets = allResolvedTargets.length;
 					setAppState('running');
 					updateProgress();
+					throwIfRunStopped(run);
 
 					let checkJobs = [];
 					isCreatingResultBatch = true;
@@ -4943,8 +5045,9 @@ function generateHTML() {
 					updateResultFilters();
 
 					await runWithConcurrency(checkJobs, CHECK_CONCURRENCY, function (job) {
-						return checkIP(job.target, job.itemObj);
-					});
+						return checkIP(job.target, job.itemObj, run);
+					}, run);
+					throwIfRunStopped(run);
 
 					const failCount = Math.max(totalTargets - successCount, 0);
 					progressText.innerText = '总计 ' + totalTargets + ' · 有效 ' + successCount + ' · 失败 ' + failCount;
@@ -4955,12 +5058,18 @@ function generateHTML() {
 					setAppState('empty');
 				}
 			} catch (error) {
-				console.error(error);
-				progressText.innerText = '系统错误';
-				showEmptyState('检测流程中断', '请求过程中发生异常，请稍后重试。');
-				setAppState('error');
+				if (isRunStopped(run) || error?.name === 'AbortError') {
+					progressText.innerText = '已停止 · 已完成 ' + completedCount + ' / ' + totalTargets + ' · 有效 ' + successCount;
+					setAppState('stopped');
+				} else {
+					console.error(error);
+					progressText.innerText = '系统错误';
+					showEmptyState('检测流程中断', '请求过程中发生异常，请稍后重试。');
+					setAppState('error');
+				}
 			} finally {
-				checkBtn.disabled = false;
+				if (activeRun === run) activeRun = null;
+				setCheckButtonRunning(false);
 			}
 		});
 
