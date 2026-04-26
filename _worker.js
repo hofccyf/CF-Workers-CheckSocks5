@@ -1894,6 +1894,76 @@ function generateHTML(备案内容) {
 			box-shadow: inset 0 0 0 1px rgba(97, 219, 255, 0.12);
 		}
 
+		.filter-chip-risk,
+		.meta-chip-risk {
+			border-color: var(--risk-border);
+			background: var(--risk-bg);
+			color: var(--risk-color);
+		}
+
+		.filter-chip-risk:hover,
+		.filter-chip-risk.is-active {
+			border-color: var(--risk-active-border);
+			background: var(--risk-active-bg);
+			color: var(--risk-active-color);
+			box-shadow: inset 0 0 0 1px var(--risk-shadow);
+		}
+
+		.filter-chip-risk.risk-verylow,
+		.meta-chip-risk.risk-verylow {
+			--risk-border: rgba(16, 185, 129, 0.3);
+			--risk-bg: rgba(16, 185, 129, 0.12);
+			--risk-color: #7ef0c4;
+			--risk-active-border: rgba(16, 185, 129, 0.58);
+			--risk-active-bg: linear-gradient(135deg, rgba(16, 185, 129, 0.34), rgba(52, 211, 153, 0.2));
+			--risk-active-color: #ffffff;
+			--risk-shadow: rgba(16, 185, 129, 0.18);
+		}
+
+		.filter-chip-risk.risk-low,
+		.meta-chip-risk.risk-low {
+			--risk-border: rgba(45, 212, 191, 0.28);
+			--risk-bg: rgba(45, 212, 191, 0.1);
+			--risk-color: #99f6e4;
+			--risk-active-border: rgba(45, 212, 191, 0.54);
+			--risk-active-bg: linear-gradient(135deg, rgba(45, 212, 191, 0.3), rgba(14, 165, 233, 0.16));
+			--risk-active-color: #ffffff;
+			--risk-shadow: rgba(45, 212, 191, 0.16);
+		}
+
+		.filter-chip-risk.risk-elevated,
+		.meta-chip-risk.risk-elevated {
+			--risk-border: rgba(234, 179, 8, 0.34);
+			--risk-bg: rgba(234, 179, 8, 0.12);
+			--risk-color: #fde68a;
+			--risk-active-border: rgba(234, 179, 8, 0.62);
+			--risk-active-bg: linear-gradient(135deg, rgba(234, 179, 8, 0.36), rgba(245, 158, 11, 0.2));
+			--risk-active-color: #fffbe6;
+			--risk-shadow: rgba(234, 179, 8, 0.18);
+		}
+
+		.filter-chip-risk.risk-high,
+		.meta-chip-risk.risk-high {
+			--risk-border: rgba(249, 115, 22, 0.38);
+			--risk-bg: rgba(249, 115, 22, 0.14);
+			--risk-color: #fed7aa;
+			--risk-active-border: rgba(249, 115, 22, 0.66);
+			--risk-active-bg: linear-gradient(135deg, rgba(249, 115, 22, 0.42), rgba(239, 68, 68, 0.22));
+			--risk-active-color: #ffffff;
+			--risk-shadow: rgba(249, 115, 22, 0.18);
+		}
+
+		.filter-chip-risk.risk-critical,
+		.meta-chip-risk.risk-critical {
+			--risk-border: rgba(239, 68, 68, 0.42);
+			--risk-bg: rgba(239, 68, 68, 0.16);
+			--risk-color: #fecaca;
+			--risk-active-border: rgba(239, 68, 68, 0.72);
+			--risk-active-bg: linear-gradient(135deg, rgba(239, 68, 68, 0.48), rgba(190, 18, 60, 0.28));
+			--risk-active-color: #ffffff;
+			--risk-shadow: rgba(239, 68, 68, 0.2);
+		}
+
 		.export-chip {
 			border-color: rgba(251, 191, 36, 0.28);
 			background: linear-gradient(135deg, rgba(251, 191, 36, 0.18), rgba(255, 184, 105, 0.12));
@@ -2257,6 +2327,12 @@ function generateHTML(备案内容) {
 			background: rgba(251, 113, 133, 0.1);
 			border-color: rgba(251, 113, 133, 0.22);
 			color: #ffd1d8;
+		}
+
+		.meta-chip.meta-chip-risk {
+			border-color: var(--risk-border);
+			background: var(--risk-bg);
+			color: var(--risk-color);
 		}
 
 		.exit-list {
@@ -2790,6 +2866,69 @@ function generateHTML(备案内容) {
 			box-shadow: inset 0 0 0 1px rgba(14, 165, 233, 0.08);
 		}
 
+		html[data-theme='light'] .filter-chip-risk.risk-verylow,
+		html[data-theme='light'] .meta-chip-risk.risk-verylow {
+			--risk-border: rgba(5, 150, 105, 0.24);
+			--risk-bg: rgba(5, 150, 105, 0.08);
+			--risk-color: #047857;
+			--risk-active-border: rgba(5, 150, 105, 0.42);
+			--risk-active-bg: linear-gradient(135deg, rgba(5, 150, 105, 0.18), rgba(16, 185, 129, 0.12));
+			--risk-active-color: #065f46;
+			--risk-shadow: rgba(5, 150, 105, 0.08);
+		}
+
+		html[data-theme='light'] .filter-chip-risk.risk-low,
+		html[data-theme='light'] .meta-chip-risk.risk-low {
+			--risk-border: rgba(13, 148, 136, 0.22);
+			--risk-bg: rgba(13, 148, 136, 0.07);
+			--risk-color: #0f766e;
+			--risk-active-border: rgba(13, 148, 136, 0.38);
+			--risk-active-bg: linear-gradient(135deg, rgba(13, 148, 136, 0.16), rgba(14, 165, 233, 0.1));
+			--risk-active-color: #115e59;
+			--risk-shadow: rgba(13, 148, 136, 0.08);
+		}
+
+		html[data-theme='light'] .filter-chip-risk.risk-elevated,
+		html[data-theme='light'] .meta-chip-risk.risk-elevated {
+			--risk-border: rgba(202, 138, 4, 0.28);
+			--risk-bg: rgba(202, 138, 4, 0.08);
+			--risk-color: #92400e;
+			--risk-active-border: rgba(202, 138, 4, 0.44);
+			--risk-active-bg: linear-gradient(135deg, rgba(202, 138, 4, 0.18), rgba(245, 158, 11, 0.12));
+			--risk-active-color: #78350f;
+			--risk-shadow: rgba(202, 138, 4, 0.1);
+		}
+
+		html[data-theme='light'] .filter-chip-risk.risk-high,
+		html[data-theme='light'] .meta-chip-risk.risk-high {
+			--risk-border: rgba(234, 88, 12, 0.3);
+			--risk-bg: rgba(234, 88, 12, 0.09);
+			--risk-color: #9a3412;
+			--risk-active-border: rgba(234, 88, 12, 0.46);
+			--risk-active-bg: linear-gradient(135deg, rgba(234, 88, 12, 0.2), rgba(239, 68, 68, 0.12));
+			--risk-active-color: #7c2d12;
+			--risk-shadow: rgba(234, 88, 12, 0.1);
+		}
+
+		html[data-theme='light'] .filter-chip-risk.risk-critical,
+		html[data-theme='light'] .meta-chip-risk.risk-critical {
+			--risk-border: rgba(220, 38, 38, 0.32);
+			--risk-bg: rgba(220, 38, 38, 0.1);
+			--risk-color: #991b1b;
+			--risk-active-border: rgba(220, 38, 38, 0.5);
+			--risk-active-bg: linear-gradient(135deg, rgba(220, 38, 38, 0.22), rgba(190, 18, 60, 0.14));
+			--risk-active-color: #7f1d1d;
+			--risk-shadow: rgba(220, 38, 38, 0.1);
+		}
+
+		html[data-theme='light'] .filter-chip-risk:hover,
+		html[data-theme='light'] .filter-chip-risk.is-active {
+			border-color: var(--risk-active-border);
+			background: var(--risk-active-bg);
+			color: var(--risk-active-color);
+			box-shadow: inset 0 0 0 1px var(--risk-shadow);
+		}
+
 		html[data-theme='light'] .export-chip {
 			border-color: rgba(245, 158, 11, 0.22);
 			background: linear-gradient(135deg, rgba(245, 158, 11, 0.14), rgba(251, 191, 36, 0.12));
@@ -2917,6 +3056,12 @@ function generateHTML(备案内容) {
 			background: rgba(225, 29, 72, 0.08);
 			border-color: rgba(225, 29, 72, 0.14);
 			color: #be123c;
+		}
+
+		html[data-theme='light'] .meta-chip.meta-chip-risk {
+			border-color: var(--risk-border);
+			background: var(--risk-bg);
+			color: var(--risk-color);
 		}
 
 		html[data-theme='light'] .exit-ip-btn {
@@ -3229,8 +3374,12 @@ function generateHTML(备案内容) {
 					</button>
 					<div class="filter-panel" id="filterPanel" hidden>
 						<div class="filter-row">
-							<span class="filter-row-label">筛选</span>
-							<div class="filter-options" id="primaryFilterGroup" aria-label="结果类型筛选"></div>
+							<span class="filter-row-label">风控</span>
+							<div class="filter-options" id="primaryFilterGroup" aria-label="风控评级筛选"></div>
+						</div>
+						<div class="filter-row">
+							<span class="filter-row-label">协议</span>
+							<div class="filter-options" id="protocolFilterGroup" aria-label="代理协议筛选"></div>
 						</div>
 						<div class="filter-row">
 							<span class="filter-row-label">地区</span>
@@ -3291,6 +3440,7 @@ function generateHTML(备案内容) {
 		const filterPanel = document.getElementById('filterPanel');
 		const filterToggleText = document.getElementById('filterToggleText');
 		const primaryFilterGroup = document.getElementById('primaryFilterGroup');
+		const protocolFilterGroup = document.getElementById('protocolFilterGroup');
 		const countryFilterGroup = document.getElementById('countryFilterGroup');
 		const exportGroup = document.getElementById('exportGroup');
 		const filterEmpty = document.getElementById('filterEmpty');
@@ -3317,10 +3467,20 @@ function generateHTML(备案内容) {
 		const RESOLVE_BATCH_SIZE = 50;
 		const RESOLVE_BATCH_TIMEOUT_MS = 20000;
 		const RESOLVE_BATCH_MAX_ATTEMPTS = 3;
+		const RISK_RESULT_FILTERS = [
+			{ key: 'verylow', label: '极度纯净' },
+			{ key: 'low', label: '纯净' },
+			{ key: 'elevated', label: '轻微风险' },
+			{ key: 'high', label: '高风险' },
+			{ key: 'critical', label: '极度危险' }
+		];
 		const PRIMARY_RESULT_FILTERS = [
 			{ key: 'all', label: '全部' },
 			{ key: 'success', label: '有效' },
 			{ key: 'failed', label: '失败' },
+			...RISK_RESULT_FILTERS
+		];
+		const PROTOCOL_RESULT_FILTERS = [
 			{ key: 'socks5', label: 'SOCKS5' },
 			{ key: 'http', label: 'HTTP' },
 			{ key: 'https', label: 'HTTPS' }
@@ -3385,6 +3545,7 @@ function generateHTML(备案内容) {
 		];
 		let resultRecords = [];
 		let activePrimaryFilter = 'all';
+		let activeProtocolFilters = getDefaultProtocolFilters();
 		let activeCountryFilter = 'all';
 		let isFilterPanelExpanded = false;
 		let isCreatingResultBatch = false;
@@ -3581,13 +3742,6 @@ function generateHTML(备案内容) {
 
 		function formatExitRiskText(exitData) {
 			return getExitRiskMeta(calculateExitRiskScore(exitData)).text;
-		}
-
-		function getExitRiskChipModifier(exitData) {
-			const riskMeta = getExitRiskMeta(calculateExitRiskScore(exitData));
-			return riskMeta.className === 'is-critical' || riskMeta.className === 'is-high' || riskMeta.className === 'is-elevated'
-				? 'meta-chip-danger'
-				: 'meta-chip-strong';
 		}
 
 		function buildExitRiskBadge(exitData) {
@@ -4382,9 +4536,16 @@ function generateHTML(备案内容) {
 		function resetResultFilters() {
 			resultRecords = [];
 			activePrimaryFilter = 'all';
+			activeProtocolFilters = getDefaultProtocolFilters();
 			activeCountryFilter = 'all';
 			isFilterPanelExpanded = false;
 			updateResultFilters();
+		}
+
+		function getDefaultProtocolFilters() {
+			return PROTOCOL_RESULT_FILTERS.map(function (filter) {
+				return filter.key;
+			});
 		}
 
 		function normalizeProxyType(value) {
@@ -4406,6 +4567,7 @@ function generateHTML(备案内容) {
 				el: itemObj.el,
 				status: 'pending',
 				proxyType: getProxyTypeFromTarget(target),
+				riskLevels: [],
 				countries: [],
 				data: null,
 				exitIps: []
@@ -4466,6 +4628,7 @@ function generateHTML(备案内容) {
 			if (!record) return;
 			record.status = 'success';
 			record.proxyType = normalizeProxyType(data?.type) || getProxyTypeFromTarget(record.target);
+			record.riskLevels = getRiskFilterKeys(exitIps);
 			record.countries = getCountryFilterKeys(exitIps);
 			record.data = data || null;
 			record.exitIps = Array.isArray(exitIps) ? exitIps : [];
@@ -4475,9 +4638,59 @@ function generateHTML(备案内容) {
 			if (!record) return;
 			record.status = 'error';
 			record.proxyType = normalizeProxyType(data?.type) || getProxyTypeFromTarget(record.target);
+			record.riskLevels = [];
 			record.countries = [];
 			record.data = data || null;
 			record.exitIps = [];
+		}
+
+		function getRiskFilterByKey(filterKey) {
+			return RISK_RESULT_FILTERS.find(function (filter) {
+				return filter.key === filterKey;
+			}) || null;
+		}
+
+		function getRiskFilterKeyFromLevel(level) {
+			const filter = RISK_RESULT_FILTERS.find(function (entry) {
+				return entry.label === level;
+			});
+			return filter ? filter.key : '';
+		}
+
+		function getExitRiskFilterKey(exitData) {
+			return getRiskFilterKeyFromLevel(getExitRiskMeta(calculateExitRiskScore(exitData)).level);
+		}
+
+		function getRiskFilterSeverity(filterKey) {
+			return RISK_RESULT_FILTERS.findIndex(function (filter) {
+				return filter.key === filterKey;
+			});
+		}
+
+		function getHighestExitRiskChipModifier(exitIps) {
+			let highestRiskKey = '';
+			(Array.isArray(exitIps) ? exitIps : []).forEach(function (entry) {
+				const riskKey = getExitRiskFilterKey(entry?.exitData);
+				if (riskKey && getRiskFilterSeverity(riskKey) > getRiskFilterSeverity(highestRiskKey)) {
+					highestRiskKey = riskKey;
+				}
+			});
+			return highestRiskKey ? 'meta-chip-risk risk-' + highestRiskKey : 'meta-chip-strong';
+		}
+
+		function getRiskFilterKeys(exitIps) {
+			const riskLevels = [];
+			(Array.isArray(exitIps) ? exitIps : []).forEach(function (entry) {
+				const riskKey = getExitRiskFilterKey(entry?.exitData);
+				if (riskKey && !riskLevels.includes(riskKey)) {
+					riskLevels.push(riskKey);
+				}
+			});
+			return riskLevels;
+		}
+
+		function isRiskPrimaryFilter(filterKey) {
+			return Boolean(getRiskFilterByKey(filterKey));
 		}
 
 		function doesRecordMatchPrimaryFilter(record, filterKey) {
@@ -4487,13 +4700,24 @@ function generateHTML(备案内容) {
 			if (filterKey === 'failed') {
 				return record.status === 'error';
 			}
-			if (filterKey === 'socks5' || filterKey === 'http' || filterKey === 'https') {
-				return record.status === 'success' && record.proxyType === filterKey;
+			if (isRiskPrimaryFilter(filterKey)) {
+				return record.status === 'success' && record.riskLevels.includes(filterKey);
 			}
 			return true;
 		}
 
 		function getRecordCountryKeys(record, filterKey) {
+			if (isRiskPrimaryFilter(filterKey)) {
+				const countries = [];
+				record.exitIps.forEach(function (entry) {
+					if (getExitRiskFilterKey(entry?.exitData) !== filterKey) return;
+					const country = getExitCountryFilterKey(entry?.exitData);
+					if (country && !countries.includes(country)) {
+						countries.push(country);
+					}
+				});
+				return countries;
+			}
 			return record.countries;
 		}
 
@@ -4505,6 +4729,30 @@ function generateHTML(备案内容) {
 			return resultRecords.filter(function (record) {
 				return doesRecordMatchPrimaryFilter(record, filterKey);
 			});
+		}
+
+		function doesRecordMatchProtocolFilter(record, protocolKey) {
+			return record.proxyType === protocolKey;
+		}
+
+		function doesRecordMatchProtocolFilters(record) {
+			return activeProtocolFilters.includes(record.proxyType);
+		}
+
+		function getProtocolFilteredRecords(records) {
+			return records.filter(function (record) {
+				return doesRecordMatchProtocolFilters(record);
+			});
+		}
+
+		function toggleProtocolFilter(protocolKey) {
+			if (!PROTOCOL_RESULT_FILTERS.some(function (filter) { return filter.key === protocolKey; })) return;
+			const nextFilters = activeProtocolFilters.includes(protocolKey)
+				? activeProtocolFilters.filter(function (key) { return key !== protocolKey; })
+				: activeProtocolFilters.concat(protocolKey);
+			activeProtocolFilters = PROTOCOL_RESULT_FILTERS
+				.map(function (filter) { return filter.key; })
+				.filter(function (key) { return nextFilters.includes(key); });
 		}
 
 		function getCountryFilterOptions(baseRecords, filterKey) {
@@ -4526,8 +4774,13 @@ function generateHTML(备案内容) {
 			return options;
 		}
 
-		function renderFilterChip(attributeName, key, label, count, isActive, isDisabled) {
+		function getRiskFilterChipClass(filterKey) {
+			return isRiskPrimaryFilter(filterKey) ? 'filter-chip-risk risk-' + filterKey : '';
+		}
+
+		function renderFilterChip(attributeName, key, label, count, isActive, isDisabled, extraClass) {
 			const className = 'filter-chip'
+				+ (extraClass ? ' ' + extraClass : '')
 				+ (isActive ? ' is-active' : '')
 				+ (isDisabled ? ' is-disabled' : '');
 			const disabledAttribute = isDisabled ? ' disabled aria-disabled="true"' : '';
@@ -4540,6 +4793,7 @@ function generateHTML(备案内容) {
 			let visibleCount = 0;
 			resultRecords.forEach(function (record) {
 				const shouldShow = doesRecordMatchPrimaryFilter(record, activePrimaryFilter)
+					&& doesRecordMatchProtocolFilters(record)
 					&& doesRecordMatchCountryFilter(record, activeCountryFilter, activePrimaryFilter);
 				record.el.hidden = !shouldShow;
 				if (shouldShow) {
@@ -4556,10 +4810,32 @@ function generateHTML(备案内容) {
 			return filter ? filter.label : '全部';
 		}
 
+		function areAllProtocolFiltersActive() {
+			return activeProtocolFilters.length === PROTOCOL_RESULT_FILTERS.length
+				&& PROTOCOL_RESULT_FILTERS.every(function (filter) {
+					return activeProtocolFilters.includes(filter.key);
+				});
+		}
+
+		function getProtocolFilterLabel() {
+			if (!activeProtocolFilters.length) return '协议：未选择';
+			return '协议：' + PROTOCOL_RESULT_FILTERS
+				.filter(function (filter) {
+					return activeProtocolFilters.includes(filter.key);
+				})
+				.map(function (filter) {
+					return filter.label;
+				})
+				.join(' / ');
+		}
+
 		function getFilterToggleLabel(visibleCount) {
 			const activeParts = [];
 			if (activePrimaryFilter !== 'all') {
 				activeParts.push(getPrimaryFilterLabel(activePrimaryFilter));
+			}
+			if (!areAllProtocolFiltersActive()) {
+				activeParts.push(getProtocolFilterLabel());
 			}
 			if (activeCountryFilter !== 'all') {
 				activeParts.push(activeCountryFilter);
@@ -4580,7 +4856,7 @@ function generateHTML(备案内容) {
 		}
 
 		function updateResultFilters() {
-			if (!resultsFilters || !filterToggle || !filterPanel || !filterToggleText || !primaryFilterGroup || !countryFilterGroup || !filterEmpty) return;
+			if (!resultsFilters || !filterToggle || !filterPanel || !filterToggleText || !primaryFilterGroup || !protocolFilterGroup || !countryFilterGroup || !filterEmpty) return;
 
 			if (!resultRecords.length) {
 				resultsFilters.hidden = true;
@@ -4594,10 +4870,20 @@ function generateHTML(备案内容) {
 			resultsFilters.hidden = false;
 			primaryFilterGroup.innerHTML = PRIMARY_RESULT_FILTERS.map(function (filter) {
 				const count = getPrimaryFilteredRecords(filter.key).length;
-				return renderFilterChip('primary-filter', filter.key, filter.label, count, activePrimaryFilter === filter.key, count === 0);
+				const isActive = activePrimaryFilter === filter.key;
+				return renderFilterChip('primary-filter', filter.key, filter.label, count, isActive, count === 0 && !isActive, getRiskFilterChipClass(filter.key));
 			}).join('');
 
-			const baseRecords = getPrimaryFilteredRecords(activePrimaryFilter);
+			const primaryRecords = getPrimaryFilteredRecords(activePrimaryFilter);
+			protocolFilterGroup.innerHTML = PROTOCOL_RESULT_FILTERS.map(function (filter) {
+				const count = primaryRecords.filter(function (record) {
+					return doesRecordMatchProtocolFilter(record, filter.key);
+				}).length;
+				const isActive = activeProtocolFilters.includes(filter.key);
+				return renderFilterChip('protocol-filter', filter.key, filter.label, count, isActive, count === 0 && !isActive);
+			}).join('');
+
+			const baseRecords = getProtocolFilteredRecords(primaryRecords);
 			const countryOptions = getCountryFilterOptions(baseRecords, activePrimaryFilter);
 			if (activeCountryFilter !== 'all' && !countryOptions.some(function (option) { return option.key === activeCountryFilter; })) {
 				activeCountryFilter = 'all';
@@ -4615,6 +4901,7 @@ function generateHTML(备案内容) {
 		function getCurrentFilteredRecords() {
 			return resultRecords.filter(function (record) {
 				return doesRecordMatchPrimaryFilter(record, activePrimaryFilter)
+					&& doesRecordMatchProtocolFilters(record)
 					&& doesRecordMatchCountryFilter(record, activeCountryFilter, activePrimaryFilter);
 			});
 		}
@@ -4653,14 +4940,36 @@ function generateHTML(备案内容) {
 			return [getProbeForTextExport(data, 'ipv6'), getProbeForTextExport(data, 'ipv4')].filter(Boolean);
 		}
 
+		function doesProbeMatchActiveRiskFilter(probe) {
+			return !isRiskPrimaryFilter(activePrimaryFilter) || getExitRiskFilterKey(probe.exit) === activePrimaryFilter;
+		}
+
+		function doesProbeMatchActiveCountryFilter(probe) {
+			return activeCountryFilter === 'all' || getExitCountryFilterKey(probe.exit) === activeCountryFilter;
+		}
+
 		function getPreferredTextExportProbe(data) {
 			const candidates = getTextExportProbeCandidates(data);
+			const exactMatchedProbe = candidates.find(function (probe) {
+				return doesProbeMatchActiveRiskFilter(probe) && doesProbeMatchActiveCountryFilter(probe);
+			});
+			if (exactMatchedProbe) {
+				return exactMatchedProbe;
+			}
 			if (activeCountryFilter !== 'all') {
 				const countryMatchedProbe = candidates.find(function (probe) {
 					return getExitCountryFilterKey(probe.exit) === activeCountryFilter;
 				});
 				if (countryMatchedProbe) {
 					return countryMatchedProbe;
+				}
+			}
+			if (isRiskPrimaryFilter(activePrimaryFilter)) {
+				const riskMatchedProbe = candidates.find(function (probe) {
+					return getExitRiskFilterKey(probe.exit) === activePrimaryFilter;
+				});
+				if (riskMatchedProbe) {
+					return riskMatchedProbe;
 				}
 			}
 			return candidates[0] || null;
@@ -5265,9 +5574,7 @@ function generateHTML(备案内容) {
 					const riskSummary = joinUniqueValues(exitIps.map(function (entry) {
 						return formatExitRiskText(entry.exitData);
 					}), '未知');
-					const riskModifier = exitIps.some(function (entry) {
-						return getExitRiskChipModifier(entry.exitData) === 'meta-chip-danger';
-					}) ? 'meta-chip-danger' : 'meta-chip-strong';
+					const riskModifier = getHighestExitRiskChipModifier(exitIps);
 					const metaParts = [
 						buildMetaChip(locations, 'location'),
 						buildMetaChip(networks, 'network'),
@@ -5439,6 +5746,15 @@ function generateHTML(备案内容) {
 			if (!button || button.disabled) return;
 
 			activePrimaryFilter = button.dataset.primaryFilter || 'all';
+			activeCountryFilter = 'all';
+			updateResultFilters();
+		});
+
+		protocolFilterGroup.addEventListener('click', function (event) {
+			const button = event.target.closest('[data-protocol-filter]');
+			if (!button || button.disabled) return;
+
+			toggleProtocolFilter(button.dataset.protocolFilter || '');
 			activeCountryFilter = 'all';
 			updateResultFilters();
 		});
