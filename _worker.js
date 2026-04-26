@@ -2269,11 +2269,171 @@ function generateHTML() {
 		.map-container-wrapper {
 			display: none;
 			margin-top: 16px;
-			height: 330px;
 			border-radius: 22px;
-			overflow: hidden;
 			border: 1px solid rgba(255, 255, 255, 0.08);
 			background: rgba(255, 255, 255, 0.03);
+			padding: 18px;
+			box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.04);
+		}
+
+		.map-detail-map-panel {
+			height: 330px;
+			border-radius: 18px;
+			overflow: hidden;
+			border: 1px solid rgba(255, 255, 255, 0.08);
+			background: rgba(5, 12, 22, 0.72);
+		}
+
+		.map-detail-map-slot {
+			width: 100%;
+			height: 100%;
+		}
+
+		.exit-detail-grid {
+			display: grid;
+			grid-template-columns: repeat(2, minmax(0, 1fr));
+			gap: 16px;
+			margin-top: 16px;
+		}
+
+		.exit-detail-card {
+			min-width: 0;
+			padding: 18px;
+			border-radius: 18px;
+			border: 1px solid rgba(255, 255, 255, 0.07);
+			background: linear-gradient(180deg, rgba(12, 26, 42, 0.7), rgba(8, 18, 32, 0.82));
+			box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.035);
+		}
+
+		.exit-detail-section-title {
+			margin: 0 0 14px;
+			font-size: 0.78rem;
+			font-weight: 800;
+			letter-spacing: 0.12em;
+			text-transform: uppercase;
+			color: var(--accent-warm);
+		}
+
+		.exit-detail-list,
+		.exit-detail-security-grid {
+			display: grid;
+			gap: 0 18px;
+		}
+
+		.exit-detail-security-grid {
+			grid-template-columns: repeat(2, minmax(0, 1fr));
+		}
+
+		.exit-detail-item {
+			display: flex;
+			align-items: flex-start;
+			justify-content: space-between;
+			gap: 16px;
+			padding: 10px 0;
+			min-width: 0;
+		}
+
+		.exit-detail-item:not(:last-child) {
+			border-bottom: 1px dashed rgba(144, 180, 212, 0.14);
+		}
+
+		.exit-detail-label {
+			flex: 0 0 auto;
+			color: var(--muted);
+			font-size: 0.84rem;
+			font-weight: 600;
+		}
+
+		.exit-detail-value {
+			min-width: 0;
+			color: var(--text);
+			font-size: 0.86rem;
+			font-weight: 700;
+			line-height: 1.6;
+			text-align: right;
+			word-break: break-word;
+		}
+
+		.exit-risk-badge,
+		.exit-detail-state {
+			display: inline-flex;
+			align-items: center;
+			justify-content: center;
+			padding: 4px 10px;
+			border-radius: 999px;
+			font-size: 0.76rem;
+			font-weight: 800;
+			letter-spacing: 0.01em;
+			border: 1px solid transparent;
+			white-space: nowrap;
+		}
+
+		.exit-risk-badge {
+			max-width: 100%;
+			text-align: center;
+			white-space: normal;
+		}
+
+		.exit-risk-badge.is-info {
+			background: rgba(14, 165, 233, 0.16);
+			border-color: rgba(14, 165, 233, 0.26);
+			color: #9de2ff;
+		}
+
+		.exit-risk-badge.is-critical {
+			background: #ef4444;
+			color: #ffffff;
+		}
+
+		.exit-risk-badge.is-high {
+			background: #f97316;
+			color: #ffffff;
+		}
+
+		.exit-risk-badge.is-elevated {
+			background: #eab308;
+			color: #2f2403;
+		}
+
+		.exit-risk-badge.is-low {
+			background: rgba(16, 185, 129, 0.14);
+			border-color: rgba(16, 185, 129, 0.3);
+			color: #7ef0c4;
+		}
+
+		.exit-risk-badge.is-verylow {
+			background: #10b981;
+			color: #ffffff;
+		}
+
+		.exit-detail-state.is-safe {
+			color: #7ef0c4;
+			background: rgba(16, 185, 129, 0.12);
+			border-color: rgba(16, 185, 129, 0.22);
+		}
+
+		.exit-detail-state.is-neutral {
+			color: var(--text);
+			background: rgba(255, 255, 255, 0.04);
+			border-color: rgba(255, 255, 255, 0.1);
+		}
+
+		.exit-detail-state.is-danger {
+			color: #ffd2d8;
+			background: rgba(239, 68, 68, 0.12);
+			border-color: rgba(239, 68, 68, 0.22);
+		}
+
+		.exit-detail-state.is-warn {
+			color: #ffd59a;
+			background: rgba(245, 158, 11, 0.12);
+			border-color: rgba(245, 158, 11, 0.22);
+		}
+
+		.exit-detail-state.is-info {
+			color: #9de2ff;
+			background: rgba(14, 165, 233, 0.12);
+			border-color: rgba(14, 165, 233, 0.22);
 		}
 
 		#map-template {
@@ -2464,6 +2624,48 @@ function generateHTML() {
 		html[data-theme='light'] .map-container-wrapper {
 			background: rgba(255, 255, 255, 0.62);
 			border-color: rgba(95, 123, 150, 0.14);
+		}
+
+		html[data-theme='light'] .map-detail-map-panel,
+		html[data-theme='light'] .exit-detail-card {
+			border-color: rgba(95, 123, 150, 0.12);
+		}
+
+		html[data-theme='light'] .map-detail-map-panel {
+			background: rgba(227, 239, 248, 0.72);
+		}
+
+		html[data-theme='light'] .exit-detail-card {
+			background: linear-gradient(180deg, rgba(255, 255, 255, 0.92), rgba(245, 249, 253, 0.92));
+			box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.55);
+		}
+
+		html[data-theme='light'] .exit-detail-item:not(:last-child) {
+			border-bottom-color: rgba(95, 123, 150, 0.16);
+		}
+
+		html[data-theme='light'] .exit-risk-badge.is-info,
+		html[data-theme='light'] .exit-detail-state.is-info {
+			color: #0c7fb3;
+		}
+
+		html[data-theme='light'] .exit-risk-badge.is-low,
+		html[data-theme='light'] .exit-detail-state.is-safe {
+			color: #047857;
+		}
+
+		html[data-theme='light'] .exit-detail-state.is-neutral {
+			background: rgba(255, 255, 255, 0.82);
+			border-color: rgba(95, 123, 150, 0.16);
+			color: #10253d;
+		}
+
+		html[data-theme='light'] .exit-detail-state.is-danger {
+			color: #be123c;
+		}
+
+		html[data-theme='light'] .exit-detail-state.is-warn {
+			color: #b45309;
 		}
 
 		html[data-theme='light'] .slider {
@@ -2775,6 +2977,14 @@ function generateHTML() {
 				align-items: flex-start;
 			}
 
+			.exit-detail-grid {
+				grid-template-columns: 1fr;
+			}
+
+			.map-detail-map-panel {
+				height: 280px;
+			}
+
 		}
 
 		@media (max-width: 560px) {
@@ -2809,6 +3019,29 @@ function generateHTML() {
 
 			.metric-card {
 				padding: 14px;
+			}
+
+			.map-container-wrapper {
+				padding: 14px;
+			}
+
+			.map-detail-map-panel {
+				height: 240px;
+			}
+
+			.exit-detail-grid,
+			.exit-detail-security-grid {
+				grid-template-columns: 1fr;
+			}
+
+			.exit-detail-item {
+				flex-direction: column;
+				align-items: flex-start;
+				gap: 6px;
+			}
+
+			.exit-detail-value {
+				text-align: left;
 			}
 
 		}
@@ -3069,16 +3302,57 @@ function generateHTML() {
 			{ header: 'PASSWORD', path: 'password' },
 			{ header: 'HOSTNAME', path: 'hostname' },
 			{ header: 'PORT', path: 'port' },
+			{ header: 'LINK', path: 'link' },
 			{ header: 'CONNECT_MS', path: 'responseTime' },
 			{ header: 'EXIT_IP', path: 'exit.ip' },
-			{ header: 'EXIT_ASN', path: 'exit.asn' },
-			{ header: 'EXIT_ORG', path: 'exit.asOrganization' },
-			{ header: 'EXIT_CONTINENT', path: 'exit.continent' },
-			{ header: 'EXIT_COUNTRY', path: 'exit.country' },
-			{ header: 'EXIT_REGION', path: 'exit.region' },
-			{ header: 'EXIT_CITY', path: 'exit.city' },
-			{ header: 'EXIT_LONGITUDE', path: 'exit.longitude' },
-			{ header: 'EXIT_LATITUDE', path: 'exit.latitude' }
+			{ header: 'EXIT_RIR', path: 'exit.rir' },
+			{ header: 'EXIT_ELAPSED_MS', path: 'exit.elapsed_ms' },
+			{ header: 'EXIT_IS_BOGON', path: 'exit.is_bogon' },
+			{ header: 'EXIT_IS_MOBILE', path: 'exit.is_mobile' },
+			{ header: 'EXIT_IS_SATELLITE', path: 'exit.is_satellite' },
+			{ header: 'EXIT_IS_CRAWLER', path: 'exit.is_crawler' },
+			{ header: 'EXIT_IS_DATACENTER', path: 'exit.is_datacenter' },
+			{ header: 'EXIT_IS_TOR', path: 'exit.is_tor' },
+			{ header: 'EXIT_IS_PROXY', path: 'exit.is_proxy' },
+			{ header: 'EXIT_IS_VPN', path: 'exit.is_vpn' },
+			{ header: 'EXIT_IS_ABUSER', path: 'exit.is_abuser' },
+			{ header: 'EXIT_DATACENTER_NAME', path: 'exit.datacenter.datacenter' },
+			{ header: 'EXIT_DATACENTER_DOMAIN', path: 'exit.datacenter.domain' },
+			{ header: 'EXIT_DATACENTER_NETWORK', path: 'exit.datacenter.network' },
+			{ header: 'EXIT_COMPANY_NAME', path: 'exit.company.name' },
+			{ header: 'EXIT_COMPANY_ABUSER_SCORE', path: 'exit.company.abuser_score' },
+			{ header: 'EXIT_COMPANY_DOMAIN', path: 'exit.company.domain' },
+			{ header: 'EXIT_COMPANY_TYPE', path: 'exit.company.type' },
+			{ header: 'EXIT_COMPANY_NETWORK', path: 'exit.company.network' },
+			{ header: 'EXIT_COMPANY_WHOIS', path: 'exit.company.whois' },
+			{ header: 'EXIT_ASN', path: 'exit.asnInfo.asn' },
+			{ header: 'EXIT_ASN_ABUSER_SCORE', path: 'exit.asnInfo.abuser_score' },
+			{ header: 'EXIT_ASN_ROUTE', path: 'exit.asnInfo.route' },
+			{ header: 'EXIT_ASN_DESCR', path: 'exit.asnInfo.descr' },
+			{ header: 'EXIT_ASN_COUNTRY', path: 'exit.asnInfo.country' },
+			{ header: 'EXIT_ASN_ACTIVE', path: 'exit.asnInfo.active' },
+			{ header: 'EXIT_ASN_ORG', path: 'exit.asnInfo.org' },
+			{ header: 'EXIT_ASN_DOMAIN', path: 'exit.asnInfo.domain' },
+			{ header: 'EXIT_ASN_ABUSE', path: 'exit.asnInfo.abuse' },
+			{ header: 'EXIT_ASN_TYPE', path: 'exit.asnInfo.type' },
+			{ header: 'EXIT_ASN_UPDATED', path: 'exit.asnInfo.updated' },
+			{ header: 'EXIT_ASN_RIR', path: 'exit.asnInfo.rir' },
+			{ header: 'EXIT_ASN_WHOIS', path: 'exit.asnInfo.whois' },
+			{ header: 'EXIT_LOCATION_IS_EU_MEMBER', path: 'exit.location.is_eu_member' },
+			{ header: 'EXIT_LOCATION_CALLING_CODE', path: 'exit.location.calling_code' },
+			{ header: 'EXIT_LOCATION_CURRENCY_CODE', path: 'exit.location.currency_code' },
+			{ header: 'EXIT_LOCATION_CONTINENT', path: 'exit.location.continent' },
+			{ header: 'EXIT_LOCATION_COUNTRY', path: 'exit.location.country' },
+			{ header: 'EXIT_LOCATION_COUNTRY_CODE', path: 'exit.location.country_code' },
+			{ header: 'EXIT_LOCATION_STATE', path: 'exit.location.state' },
+			{ header: 'EXIT_LOCATION_CITY', path: 'exit.location.city' },
+			{ header: 'EXIT_LOCATION_LATITUDE', path: 'exit.location.latitude' },
+			{ header: 'EXIT_LOCATION_LONGITUDE', path: 'exit.location.longitude' },
+			{ header: 'EXIT_LOCATION_ZIP', path: 'exit.location.zip' },
+			{ header: 'EXIT_LOCATION_TIMEZONE', path: 'exit.location.timezone' },
+			{ header: 'EXIT_LOCATION_LOCAL_TIME', path: 'exit.location.local_time' },
+			{ header: 'EXIT_LOCATION_LOCAL_TIME_UNIX', path: 'exit.location.local_time_unix' },
+			{ header: 'EXIT_LOCATION_IS_DST', path: 'exit.location.is_dst' }
 		];
 		let resultRecords = [];
 		let activePrimaryFilter = 'all';
@@ -3243,11 +3517,213 @@ function generateHTML() {
 			});
 		}
 
+		function joinNonEmptyValues(values, separator) {
+			return values
+				.map(function (value) {
+					return String(value ?? '').trim();
+				})
+				.filter(Boolean)
+				.join(separator || ' / ');
+		}
+
+		function formatExitIpType(type) {
+			const text = String(type || '').trim();
+			if (!text) return '未知';
+			const mapping = {
+				isp: '住宅',
+				hosting: '机房',
+				business: '商用'
+			};
+			return mapping[text.toLowerCase()] || text;
+		}
+
+		function parseAbuseScore(value) {
+			const score = Number.parseFloat(String(value ?? '').trim());
+			return Number.isFinite(score) ? score : null;
+		}
+
+		function calculateExitRiskScore(exitData) {
+			const companyScore = parseAbuseScore(exitData?.company?.abuser_score) || 0;
+			const asnScore = parseAbuseScore(exitData?.asnInfo?.abuser_score) || 0;
+			const baseScore = ((companyScore + asnScore) / 2) * 5;
+			const riskCount = [
+				exitData?.is_crawler,
+				exitData?.is_proxy,
+				exitData?.is_vpn,
+				exitData?.is_tor,
+				exitData?.is_abuser
+			].filter(function (flag) {
+				return flag === true;
+			}).length;
+			let finalScore = baseScore + riskCount * 0.15;
+			if (exitData?.is_bogon) finalScore += 1.0;
+			if (baseScore === 0 && riskCount === 0 && !exitData?.is_bogon) return null;
+			return finalScore;
+		}
+
+		function getExitRiskMeta(score) {
+			if (score === null || score === undefined) {
+				return {
+					level: '未知',
+					className: 'is-info',
+					text: '未知'
+				};
+			}
+
+			const percentage = score * 100;
+			if (percentage >= 100) return { level: '极度危险', className: 'is-critical', text: percentage.toFixed(2) + '% 极度危险' };
+			if (percentage >= 20) return { level: '高风险', className: 'is-high', text: percentage.toFixed(2) + '% 高风险' };
+			if (percentage >= 5) return { level: '轻微风险', className: 'is-elevated', text: percentage.toFixed(2) + '% 轻微风险' };
+			if (percentage >= 0.25) return { level: '纯净', className: 'is-low', text: percentage.toFixed(2) + '% 纯净' };
+			return { level: '极度纯净', className: 'is-verylow', text: percentage.toFixed(2) + '% 极度纯净' };
+		}
+
+		function formatExitRiskText(exitData) {
+			return getExitRiskMeta(calculateExitRiskScore(exitData)).text;
+		}
+
+		function getExitRiskChipModifier(exitData) {
+			const riskMeta = getExitRiskMeta(calculateExitRiskScore(exitData));
+			return riskMeta.className === 'is-critical' || riskMeta.className === 'is-high' || riskMeta.className === 'is-elevated'
+				? 'meta-chip-danger'
+				: 'meta-chip-strong';
+		}
+
+		function buildExitRiskBadge(exitData) {
+			const riskMeta = getExitRiskMeta(calculateExitRiskScore(exitData));
+			return '<span class="exit-risk-badge ' + riskMeta.className + '">' + escapeHtml(riskMeta.text) + '</span>';
+		}
+
+		function buildExitStateBadge(flag, tone) {
+			const toneClass = flag ? {
+				danger: 'is-danger',
+				warn: 'is-warn',
+				info: 'is-info',
+				bonus: 'is-safe'
+			}[tone] || 'is-danger' : (tone === 'bonus' ? 'is-neutral' : 'is-safe');
+			return '<span class="exit-detail-state ' + toneClass + '">' + (flag ? '是' : '否') + '</span>';
+		}
+
+		function buildExitDetailRow(label, value, allowHtml) {
+			const content = allowHtml ? value : escapeHtml(firstNonEmpty(value, '未知'));
+			return '<div class="exit-detail-item"><span class="exit-detail-label">' + escapeHtml(label) + '</span><span class="exit-detail-value">' + content + '</span></div>';
+		}
+
+		function formatExitLocationDetail(exitData) {
+			const countryCode = firstNonEmpty(exitData?.countryCode, exitData?.country_code, exitData?.location?.country_code);
+			const countryName = firstNonEmpty(
+				exitData?.countryName,
+				exitData?.location?.country,
+				exitData?.country && exitData?.country !== countryCode ? exitData?.country : ''
+			);
+			const locationPrefix = joinNonEmptyValues([
+				countryCode ? '[' + countryCode + ']' : '',
+				countryName || exitData?.country
+			], ' ');
+			const region = firstNonEmpty(exitData?.region, exitData?.location?.state);
+			const city = firstNonEmpty(exitData?.city, exitData?.location?.city);
+			const area = joinNonEmptyValues([region, city], ' / ');
+			return firstNonEmpty(area ? joinNonEmptyValues([locationPrefix, area], ' / ') : locationPrefix, '未知');
+		}
+
+		function formatExitTimeDetail(exitData) {
+			const timezone = firstNonEmpty(exitData?.timezone, exitData?.location?.timezone);
+			const localTime = String(firstNonEmpty(exitData?.location?.local_time)).replace('T', ' ').trim();
+			return firstNonEmpty(joinNonEmptyValues([timezone, localTime], ' / '), '未知');
+		}
+
+		function formatExitProviderDetail(exitData) {
+			const values = [
+				exitData?.company?.name,
+				exitData?.datacenter?.datacenter,
+				exitData?.asOrganization
+			].map(function (value) {
+				return String(value ?? '').trim();
+			}).filter(Boolean);
+			const uniqueValues = values.filter(function (value, index) {
+				return values.indexOf(value) === index;
+			});
+			return firstNonEmpty(uniqueValues.join(' / '), '未知');
+		}
+
+		function formatExitAsnDetail(exitData) {
+			const asn = firstNonEmpty(exitData?.asn, exitData?.asnInfo?.asn);
+			const route = firstNonEmpty(exitData?.asnInfo?.route);
+			const org = firstNonEmpty(exitData?.asnInfo?.org, exitData?.asOrganization);
+			return firstNonEmpty(
+				joinNonEmptyValues([
+					asn ? 'AS' + asn : '',
+					route || org
+				], ' / '),
+				'未知'
+			);
+		}
+
+		function formatExitNetworkRange(exitData) {
+			return firstNonEmpty(
+				exitData?.company?.network,
+				exitData?.datacenter?.network,
+				exitData?.asnInfo?.route,
+				'未知'
+			);
+		}
+
+		function formatExitTypeDetail(exitData) {
+			const rawCompanyType = firstNonEmpty(exitData?.company?.type);
+			const rawAsnType = firstNonEmpty(exitData?.asnInfo?.type);
+			if (!rawCompanyType && !rawAsnType) return '未知';
+			return joinNonEmptyValues([
+				rawCompanyType ? formatExitIpType(rawCompanyType) : '',
+				rawAsnType ? formatExitIpType(rawAsnType) : ''
+			], ' / ');
+		}
+
+		function formatExitRegistryDetail(exitData) {
+			return firstNonEmpty(
+				joinNonEmptyValues([
+					firstNonEmpty(exitData?.rir),
+					firstNonEmpty(exitData?.asnInfo?.rir)
+				], ' / '),
+				'未知'
+			);
+		}
+
+		function renderExitDetailPanel(container, exitData) {
+			const basicCard = container.querySelector('.exit-basic-info-card');
+			const securityCard = container.querySelector('.exit-security-info-card');
+			if (!basicCard || !securityCard) return;
+
+			basicCard.innerHTML =
+				'<h4 class="exit-detail-section-title">基本信息</h4>' +
+				'<div class="exit-detail-list">' +
+					buildExitDetailRow('地理位置', formatExitLocationDetail(exitData)) +
+					buildExitDetailRow('时区 / 当地时间', formatExitTimeDetail(exitData)) +
+					buildExitDetailRow('归属 / 机房', formatExitProviderDetail(exitData)) +
+					buildExitDetailRow('RIR', formatExitRegistryDetail(exitData)) +
+					buildExitDetailRow('ASN / 路由', formatExitAsnDetail(exitData)) +
+				'</div>';
+
+			securityCard.innerHTML =
+				'<h4 class="exit-detail-section-title">安全检测</h4>' +
+				'<div class="exit-detail-security-grid">' +
+					buildExitDetailRow('数据中心', buildExitStateBadge(Boolean(exitData?.is_datacenter), 'warn'), true) +
+					buildExitDetailRow('代理服务器', buildExitStateBadge(Boolean(exitData?.is_proxy), 'danger'), true) +
+					buildExitDetailRow('VPN 连线', buildExitStateBadge(Boolean(exitData?.is_vpn), 'danger'), true) +
+					buildExitDetailRow('Tor 网络', buildExitStateBadge(Boolean(exitData?.is_tor), 'danger'), true) +
+					buildExitDetailRow('网络爬虫', buildExitStateBadge(Boolean(exitData?.is_crawler), 'danger'), true) +
+					buildExitDetailRow('移动网络', buildExitStateBadge(Boolean(exitData?.is_mobile), 'bonus'), true) +
+					buildExitDetailRow('卫星网络', buildExitStateBadge(Boolean(exitData?.is_satellite), 'bonus'), true) +
+					buildExitDetailRow('已知滥用', buildExitStateBadge(Boolean(exitData?.is_abuser), 'danger'), true) +
+					buildExitDetailRow('虚假 IP', buildExitStateBadge(Boolean(exitData?.is_bogon), 'danger'), true) +
+				'</div>';
+		}
+
 		function getMetaChipIcon(iconName) {
 			const icons = {
 				prep: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="8"></circle><path d="M12 8v4l3 2"></path></svg>',
 				location: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 21s6-4.35 6-10a6 6 0 1 0-12 0c0 5.65 6 10 6 10z"></path><circle cx="12" cy="11" r="2.5"></circle></svg>',
 				network: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="4" width="18" height="6" rx="2"></rect><rect x="3" y="14" width="18" height="6" rx="2"></rect><circle cx="7" cy="7" r="1"></circle><circle cx="7" cy="17" r="1"></circle><path d="M12 10v4"></path></svg>',
+				shield: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3l7 3v5c0 5-3.4 8.74-7 10-3.6-1.26-7-5-7-10V6l7-3z"></path><path d="m9.5 12 1.7 1.7 3.3-3.7"></path></svg>',
 				error: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"></circle><path d="m15 9-6 6"></path><path d="m9 9 6 6"></path></svg>',
 				info: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"></circle><path d="M12 10v5"></path><circle cx="12" cy="7" r="1"></circle></svg>',
 				retry: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 5v6h-6"></path><path d="M4 19v-6h6"></path><path d="M7 17a7 7 0 0 0 11-4"></path><path d="M17 7A7 7 0 0 0 6 11"></path></svg>'
@@ -4237,7 +4713,7 @@ function generateHTML() {
 			}).join(',');
 			const rows = records.map(function (record) {
 				return EXPORT_CSV_COLUMNS.map(function (column) {
-					return escapeCsvValue(getNestedExportValue(record.data, column.path));
+					return escapeCsvValue(getNestedExportValue(record?.data, column.path));
 				}).join(',');
 			});
 			return [headerLine].concat(rows).join('\\n');
@@ -4500,8 +4976,8 @@ function generateHTML() {
 		}
 
 		function formatExitLocation(exitData) {
-			const country = String(exitData?.country || '').trim();
-			const city = String(exitData?.city || '').trim();
+			const country = String(firstNonEmpty(exitData?.countryName, exitData?.location?.country, exitData?.country) || '').trim();
+			const city = String(firstNonEmpty(exitData?.city, exitData?.location?.city) || '').trim();
 			return [country, city].filter(Boolean).join(' · ');
 		}
 
@@ -4619,7 +5095,15 @@ function generateHTML() {
 					buildMetaChip('准备建立检测请求', 'prep') +
 				'</div>' +
 				'<div class="exit-list"></div>' +
-				'<div class="map-container-wrapper"></div>';
+				'<div class="map-container-wrapper">' +
+					'<div class="map-detail-map-panel">' +
+						'<div class="map-detail-map-slot"></div>' +
+					'</div>' +
+					'<div class="exit-detail-grid">' +
+						'<div class="exit-detail-card exit-basic-info-card"></div>' +
+						'<div class="exit-detail-card exit-security-info-card"></div>' +
+					'</div>' +
+				'</div>';
 
 			resultsDiv.appendChild(div);
 
@@ -4671,6 +5155,7 @@ function generateHTML() {
 				ip: ip,
 				ipType: firstNonEmpty(exit.ipType, ip && String(ip).includes(':') ? 'ipv6' : (ip ? 'ipv4' : '')),
 				asn: asn,
+				asnInfo: asnInfo,
 				asOrganization: asOrganization,
 				org: firstNonEmpty(exit.org, asn ? 'AS' + asn + (asOrganization ? ' ' + asOrganization : '') : asOrganization),
 				continent: firstNonEmpty(exit.continent, location.continent),
@@ -4773,9 +5258,20 @@ function generateHTML() {
 						buildCopyableTarget(data.link || target) +
 						'<span class="result-detail">代理验证通过，可继续查看出口位置和网络信息。</span>';
 
+					const typeSummary = joinUniqueValues(exitIps.map(function (entry) {
+						return formatExitTypeDetail(entry.exitData);
+					}), '类型未知');
+					const riskSummary = joinUniqueValues(exitIps.map(function (entry) {
+						return formatExitRiskText(entry.exitData);
+					}), '未知');
+					const riskModifier = exitIps.some(function (entry) {
+						return getExitRiskChipModifier(entry.exitData) === 'meta-chip-danger';
+					}) ? 'meta-chip-danger' : 'meta-chip-strong';
 					const metaParts = [
 						buildMetaChip(locations, 'location'),
-						buildMetaChip(networks, 'network')
+						buildMetaChip(networks, 'network'),
+						buildMetaChip(typeSummary, 'network', 'meta-chip-strong'),
+						buildMetaChip(riskSummary, 'shield', riskModifier)
 					];
 					itemObj.meta.innerHTML = metaParts.join('');
 
@@ -4856,8 +5352,12 @@ function generateHTML() {
 
 			container.dataset.activeExitKey = nextSelectionKey;
 			button.classList.add('is-active');
+			renderExitDetailPanel(container, exitData);
 			initMap();
-			container.appendChild(globalMap);
+			const mapHost = container.querySelector('.map-detail-map-slot');
+			if (mapHost) {
+				mapHost.appendChild(globalMap);
+			}
 			container.style.display = 'block';
 
 			setTimeout(async function () {
