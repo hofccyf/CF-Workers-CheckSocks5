@@ -1,186 +1,228 @@
 # CF-Workers-CheckSocks5
+
 ![demo](./demo.png)
-一个基于 Cloudflare Workers 的高性能代理检测服务，支持 SOCKS5 和 HTTP 代理的连通性测试和 IP 信息查询。
 
-## ✨ 功能特性
+一个基于 Cloudflare Workers 的代理可用性检测工具。项目以单个 `_worker.js` 运行为核心，支持 SOCKS5、HTTP、HTTPS 代理检测，提供网页端单条/批量检测、域名解析、出口 IP 信息展示、地图定位、结果筛选与导出。
 
-- 🚀 **代理检测**：支持 SOCKS5 和 HTTP 代理的连通性测试
-- 🌍 **IP 信息查询**：获取 IP 地址的地理位置、ASN、风险评分等详细信息
-- 🔒 **安全认证**：支持用户名/密码认证的代理
-- 📱 **响应式界面**：现代化的 Web 界面，支持移动端访问
-- 🎯 **域名解析**：自动解析域名并支持多 IP 切换
-- ⚡ **高性能**：基于 Cloudflare Workers 边缘计算平台
-- 🔧 **易部署**：一键部署，无需服务器维护
+> 当前源码没有内置 `TOKEN` 鉴权。部署到公开域名后，任何访问者都可以使用检测接口；如果需要私有使用，请在 Cloudflare 侧增加访问控制或自行扩展鉴权逻辑。
 
-## 🏃 快速开始
+## 功能特性
 
-### 在线体验
+- 支持 `socks5://`、`http://`、`https://` 三类代理协议。
+- 支持无认证代理、`username:password` 认证代理，以及 IPv4、域名、方括号 IPv6 地址。
+- 支持单条检测和批量检测；批量模式会自动去重、解析域名并并发验证。
+- 支持域名解析为 A / AAAA 记录，优先使用 Cloudflare DoH，失败后回退到 Google DoH。
+- 支持代理出口信息展示，包括出口 IP、地区、ASN、运营商、风险标签、响应耗时等。
+- 支持 Leaflet / OpenStreetMap 地图展示出口位置。
+- 支持结果筛选，并可将有效结果复制到剪贴板或导出为 TXT / CSV。
+- 支持深浅色主题、历史记录、访问人数显示和自定义页脚备案内容。
 
-访问在线演示：[Demo](https://check.socks5.cmliussss.net)
+## 在线体验
 
-## 🚀 部署方式
+Demo: <https://check.socks5.cmliussss.net>
 
-- **Workers** 部署：复制 [_worker.js](https://github.com/cmliu/CF-Workers-CheckSocks5/blob/main/_worker.js) 代码，`保存并部署`即可
-- **Pages** 部署：`Fork` 后 `连接GitHub` 一键部署即可
+## 部署方式
 
-## 🔧 环境变量配置
+### Cloudflare Workers
 
-在 Cloudflare Workers 控制台中设置以下环境变量：
+1. 在 Cloudflare 控制台创建一个 Worker。
+2. 将 [_worker.js](./_worker.js) 的全部内容复制到 Worker 编辑器中。
+3. 保存并部署。
+4. 访问 Worker 域名即可打开检测页面。
+
+### Cloudflare Pages
+
+如果使用 Pages，可将仓库连接到 Cloudflare Pages，并确保部署产物根目录包含 `_worker.js`。该文件会作为 Pages 的 Worker 入口处理请求。
+
+项目没有额外构建步骤，也不依赖 `package.json`。
+
+## 环境变量
+
+当前源码只读取以下环境变量：
 
 | 变量名 | 说明 | 示例 | 必需 |
-|--------|------|------|------|
-| `TOKEN` | API 访问令牌，用于保护接口（设置`TOKEN`之后，首页会变成**nginx**，避免变成公共服务） | `your-secret-token` | 否 |
-| `URL302` | 302跳转伪装首页 | `https://example.com` | 否 |
-| `URL` | 反向代理伪装首页 | `https://example.com` | 否 |
-| `ICO` | 网站图标 URL | `https://example.com/favicon.ico` | 否 |
-| `IMG` | 背景图片 URL，支持多个（用逗号分隔） | `https://example.com/bg.jpg` | 否 |
-| `BEIAN` | 网站备案信息 | `ICP备案号` | 否 |
+| --- | --- | --- | --- |
+| `BEIAN` | 自定义页面页脚 HTML。未设置时使用默认页脚，包含项目链接、访问人数和维护者链接。 | `© 2026 Example.com · ICP 备案号` | 否 |
 
-## 📖 API 文档
+## 支持的代理格式
 
-### 代理检测接口
-
-**端点**：`/check`
-
-**请求方式**：`GET`
-
-**参数**：
-- `proxy`：代理 URL（支持 socks5:// 和 http:// 前缀）
-- `token`：访问令牌（如果设置了 TOKEN 环境变量）
-
-**代理 URL 格式**：
-```
-# SOCKS5 代理
-socks5://username:password@host:port
-socks5://host:port
-
-# HTTP 代理
-http://username:password@host:port
-http://host:port
-
-# IPv6 地址需要用方括号括起来
+```text
+socks5://host:1080
+socks5://username:password@host:1080
+http://host:80
+http://username:password@host:80
+https://host:443
+https://username:password@host:443
 socks5://username:password@[2001:db8::1]:1080
 ```
 
-**响应示例**：
+网页端输入缺少协议头时，会默认按 `socks5://` 处理。端口缺省值分别为：
+
+| 协议 | 默认端口 |
+| --- | --- |
+| `socks5` | `1080` |
+| `http` | `80` |
+| `https` | `443` |
+
+## API
+
+所有 JSON 接口都带有 CORS 响应头，并支持 `OPTIONS` 预检请求。
+
+### `GET /check`
+
+检测单个代理是否可用。Worker 会通过代理建立到 `api.ipapi.is` 的连接，并读取该服务返回的出口 IP 信息。
+
+请求参数支持以下写法：
+
+```text
+/check?proxy=socks5://user:pass@proxy.example.com:1080
+/check?socks5=proxy.example.com:1080
+/check?http=proxy.example.com:80
+/check?https=proxy.example.com:443
+/check/proxy=socks5://proxy.example.com:1080
+```
+
+响应示例：
+
 ```json
 {
-    "success": true,
-    "proxy": "socks5://username:password@host:port",
-    "ip": "8.8.8.8",
+  "candidate": "proxy.example.com:1080",
+  "type": "socks5",
+  "username": null,
+  "password": null,
+  "hostname": "proxy.example.com",
+  "port": 1080,
+  "link": "socks5://proxy.example.com:1080",
+  "success": true,
+  "responseTime": 523,
+  "exit": {
+    "ip": "203.0.113.10",
     "rir": "APNIC",
-    "is_bogon": false,
-    "is_mobile": false,
-    "is_satellite": false,
-    "is_crawler": false,
     "is_datacenter": true,
-    "is_tor": false,
     "is_proxy": false,
-    "is_vpn": true,
-    "is_abuser": false,
-    "datacenter": {
-        "network": "8.213.144.0/20",
-        "datacenter": "alibaba"
-    },
-    "company": {
-        "name": "Alibabacom Singapore E-Commerce Private Limited a",
-        "abuser_score": "0.01 (Elevated)",
-        "domain": "alibabacloud.com",
-        "type": "hosting",
-        "network": "8.213.128.0 - 8.213.159.255",
-        "whois": "https://api.ipapi.is/?whois=8.213.128.0"
-    },
-    "abuse": {
-        "name": "ABUSE ASEPLSG",
-        "address": "1 Raffles Place # 59-00 One Raffles Place, Tower One Singapore, Singapore",
-        "email": "abuse@alibaba-inc.com",
-        "phone": "+000000000"
-    },
+    "is_vpn": false,
     "asn": {
-        "asn": 45102,
-        "abuser_score": "0.0015 (Low)",
-        "route": "8.213.144.0/20",
-        "descr": "ALIBABA-CN-NET Alibaba US Technology Co., Ltd., CN",
-        "country": "cn",
-        "active": true,
-        "org": "Alibaba (US) Technology Co., Ltd.",
-        "domain": "alibaba.com",
-        "abuse": "didong.jc@alibaba-inc.com",
-        "type": "business",
-        "updated": "2021-10-27",
-        "rir": "APNIC",
-        "whois": "https://api.ipapi.is/?whois=AS45102"
+      "asn": 64500,
+      "org": "Example Network"
     },
     "location": {
-        "is_eu_member": false,
-        "calling_code": "82",
-        "currency_code": "KRW",
-        "continent": "AS",
-        "country": "South Korea",
-        "country_code": "KR",
-        "state": "서울특별시",
-        "city": "Seoul",
-        "latitude": 37.566,
-        "longitude": 126.9784,
-        "zip": "04524",
-        "timezone": "Asia/Seoul",
-        "local_time": "2025-05-27T15:52:11+09:00",
-        "local_time_unix": 1748328731,
-        "is_dst": false
-    },
-    "elapsed_ms": 1.07,
-    "timestamp": "2025-05-27T06:52:11.856Z"
+      "country": "Japan",
+      "country_code": "JP",
+      "city": "Tokyo",
+      "latitude": 35.6895,
+      "longitude": 139.6917
+    }
+  }
 }
 ```
 
-## 💡 使用示例
+失败时会返回 `success: false` 和 `error` 字段。
 
-### cURL 示例
+### `GET /resolve`
+
+将域名或代理链接解析为可检测的 `host:port` 列表。
+
+参数别名：
+
+- `proxyip`
+- `target`
+- `host`
+
+示例：
 
 ```bash
-# 检测 SOCKS5 代理
-curl "https://your-worker.workers.dev/check?proxy=socks5://user:pass@proxy.example.com:1080"
-
-# 检测 HTTP 代理
-curl "https://your-worker.workers.dev/check?proxy=http://proxy.example.com:8080"
-
+curl "https://your-worker.example.workers.dev/resolve?proxyip=socks5://proxy.example.com:1080"
 ```
 
-## 🔍 字段说明
+响应示例：
 
-### 风险评估字段
+```json
+[
+  "198.51.100.10:1080",
+  "[2001:db8::10]:1080"
+]
+```
 
-- `is_datacenter`：是否为数据中心 IP
-- `is_proxy`：是否为代理服务器
-- `is_vpn`：是否为 VPN 服务器
-- `is_tor`：是否为 Tor 出口节点
-- `is_crawler`：是否为网络爬虫
-- `is_abuser`：是否有滥用行为记录
-- `abuser_score`：滥用风险评分（0-1，数值越高风险越大）
+解析规则：
 
-### 地理位置字段
+- 输入已经是 IPv4 或 IPv6 时，直接返回原目标和端口。
+- 输入是域名时，解析 A / AAAA 记录。
+- 未提供端口时，解析接口默认使用 `443`。
+- 域名包含 `.tp端口.` 时，会从域名中提取端口，例如 `node.tp8443.example.com` 使用 `8443`。
+- 域名包含 `.william.` 时，会优先读取 TXT 记录，并把逗号分隔的 TXT 内容作为目标列表。
 
-- `country_code`：国家代码（ISO 3166-1 alpha-2）
-- `city`：城市名称
+### `POST /resolve-batch`
 
-### ASN 字段
+批量解析目标。单次最多 `50` 个。
 
-- `asn`：自治系统编号
-- `org`：所属组织/ISP 名称
+请求体支持 `targets` 或 `proxyips`：
 
-## 🛠️ 技术架构
+```json
+{
+  "targets": [
+    "socks5://proxy-a.example.com:1080",
+    "proxy-b.example.com:1080"
+  ]
+}
+```
 
-- **运行环境**：Cloudflare Workers
-- **网络协议**：支持 SOCKS5 和 HTTP CONNECT
-- **DNS 解析**：Cloudflare DNS over HTTPS
-- **IP 信息 API**：ipapi.is
+响应示例：
 
-## 📄 许可证
+```json
+{
+  "results": [
+    {
+      "input": "proxy-b.example.com:1080",
+      "targets": [
+        "198.51.100.20:1080"
+      ]
+    }
+  ]
+}
+```
 
-本项目采用 GNU General Public License v3.0 - 查看 [LICENSE](LICENSE) 文件了解详情
+## 网页端使用
 
-## 🙏 致谢
+1. 打开部署后的 Worker 域名。
+2. 在输入框中填写代理链接、`IP:端口`、`域名:端口` 或带认证的代理地址。
+3. 如需批量检测，打开「批量检测」并粘贴多行目标。
+4. 点击「开始检测」。
+5. 检测完成后，可按全部/有效/失败/风控评级、协议和国家地区筛选，并导出有效结果。
 
-- [Cloudflare Workers](https://workers.cloudflare.com/) - 无服务器计算平台
-- [ipapi.is](https://ipapi.is/) - IP 地理位置查询服务
-- [Cloudflare DNS](https://cloudflare-dns.com/) - DNS over HTTPS 服务
+也可以直接通过路径触发单条检测：
+
+```text
+https://your-worker.example.workers.dev/socks5://proxy.example.com:1080
+```
+
+## 运行参数
+
+源码中的主要限制和超时：
+
+| 参数 | 当前值 | 说明 |
+| --- | --- | --- |
+| `CHECK_TIMEOUT_MS` | `12000` | 单次代理检测总超时 |
+| `CONNECT_TIMEOUT_MS` | `9999` | 代理连接和握手超时 |
+| `READ_TIMEOUT_MS` | `8000` | 读取远端响应超时 |
+| `MAX_RESPONSE_BYTES` | `96 KiB` | 读取出口信息响应的最大字节数 |
+| `RESOLVE_BATCH_LIMIT` | `50` | 批量解析接口单次最大目标数 |
+| 前端检测并发 | `32` | 网页端批量检测的并发数 |
+
+## 注意事项
+
+- Cloudflare Workers 的 TCP Socket 能力由 `cloudflare:sockets` 提供，请确保部署环境支持 Workers TCP 出站连接。
+- 检测逻辑会把代理作为隧道访问 `api.ipapi.is`，因此结果反映的是该代理访问该目标服务时的可用性和出口信息。
+- 公开部署时请谨慎使用真实代理账号密码；当前页面和接口没有访问令牌保护。
+- 大批量检测可能受到 Cloudflare Workers 执行时长、并发和外部 DNS/API 可用性的影响。
+
+## 许可证
+
+本项目基于 [GNU General Public License v3.0](./LICENSE) 发布。
+
+## 致谢
+- [@Alexandre_Kojeve](https://t.me/Enkelte_notif/821)
+- [Cloudflare Workers](https://workers.cloudflare.com/)
+- [ipapi.is](https://ipapi.is/)
+- [Cloudflare DNS](https://cloudflare-dns.com/)
+- [OpenStreetMap](https://www.openstreetmap.org/)
+- [Leaflet](https://leafletjs.com/)
